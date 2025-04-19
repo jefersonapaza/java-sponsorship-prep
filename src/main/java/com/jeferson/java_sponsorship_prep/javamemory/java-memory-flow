@@ -1,0 +1,55 @@
+# ASCII Diagram to visualize the difference between primitive variables and object references in Java memory
+
+# Let's start with a Java method that declares variables and creates objects:
+
++--------------------+
+| Method Execution   |
+|                    |
+| int num = 5;       |  ---> Primitive 'num' stored in the Stack
+| double value = 10.5; | ---> 'value' stored in the Stack
+| MyObject obj = new MyObject(); | ---> 'obj' reference stored in the Stack |
+|                    |
++--------------------+
+             |
+             v
++---------------------+
+| Stack Memory        |
+|                     |
+| num --> 5           |  ---> 'num' variable (primitive)
+| value --> 10.5      |  ---> 'value' variable (primitive)
+| obj --> reference   |  ---> 'obj' is a reference pointing to Heap
+|                     |
++---------------------+
+             |
+             v
++---------------------+
+| Heap Memory         |
+|                     |
+| [Young Generation]  |  ---> The 'MyObject' object is created here
+| MyObject object     |  ---> The 'MyObject' object lives in the Young Generation
+|                     |
++---------------------+
+             |
+             v
++---------------------+
+| Garbage Collection  |
+|                     |
+| If 'obj' becomes null | ---> If there are no references to 'MyObject', it will be collected by GC.
+|                     |
++---------------------+
+
+# Explanation of Stages:
+
+1. **Method Execution:** A set of variables is declared, including primitives and an object created with 'new'.
+
+2. **Stack Memory:** Primitive variables like 'num' and 'value' are stored directly in the Stack. 'obj', being a reference, is stored in the Stack but points to an object in the Heap.
+
+3. **Heap Memory:** Objects created with 'new', like the 'MyObject' object, are stored in the Heap memory, specifically in the Young Generation in most cases.
+
+4. **Garbage Collection:** If the 'MyObject' object has no references left (e.g., if 'obj' is set to null), the garbage collector can move this object from the Young Generation to other parts of the Heap or remove it if it's no longer needed.
+
+# In summary:
+- **Primitive variables** like 'num' and 'value' are stored in the **Stack**.
+- **Object references** (like 'obj') are stored in the **Stack**, but the objects they point to reside in the **Heap**.
+- The **Heap** is where objects created with 'new' are stored, starting in the **Young Generation**, and moving to other areas of the Heap during the object's lifecycle.
+
