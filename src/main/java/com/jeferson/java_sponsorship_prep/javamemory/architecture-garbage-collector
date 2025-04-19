@@ -1,0 +1,56 @@
+                           ┌────────────────────────────┐
+                           │        Java Heap           │
+                           └────────────┬───────────────┘
+                                        │
+      ┌─────────────────────────────────▼────────────────────────────────┐
+      │                       Young Generation (Minor GC)                │
+      │  ┌────────────┐   ┌────────────┐   ┌────────────┐                │
+      │  │    Eden    │──►│  Survivor0 │──►│  Survivor1 │◄──┐            │
+      │  └────────────┘   └────────────┘   └────────────┘   │            │
+      └─────────────────────────────────────────────────────┘            │
+                    │        ▲                     ▲                     │
+                    │        │     Object survives │                     │
+                    ▼        │     GC N times      │                     │
+        ┌─────────────────────────────────────────────────────┐          │
+        │                 Old Generation (Tenured)            │◄─────────┘
+        │   (Long-lived objects - Major GC / Full GC)         │
+        └─────────────────────────────────────────────────────┘
+                            │
+                            ▼
+        ┌─────────────────────────────────────────────────────┐
+        │                Metaspace (off-heap)                 │
+        │   (Stores class metadata: class names, methods)     │
+        └─────────────────────────────────────────────────────┘
+
+New Object → Eden → Survivor0 ↔ Survivor1 → Old Generation → Garbage Collected
+               ↑                                ↓
+     Minor GC cleans Eden/S0/S1          Major GC cleans Old Gen
+
+
+# Java uses a heap-based memory model so that object memory can be managed dynamically
+# and efficiently by the Garbage Collector, based on object lifetime and references
+
+
+1. Young Generation
+- This is where new objects are created.
+
+It has 3 parts:
+- Eden: All new objects are created here first.
+- S0 and S1 (Survivor spaces): When Eden is full, surviving objects are moved to these spaces.
+
+Minor GC cleans this area frequently and quickly.
+- If an object survives multiple minor GCs, it is promoted to the Old Generation.
+
+2. Old Generation
+- This area stores long-living objects.
+- These objects survived many GCs in the Young Generation.
+- Major GC (or Full GC) happens here, which is slower and more expensive.
+- If this space gets full, Java throws an OutOfMemoryError.
+
+3. Metaspace (Java 8 and above)
+- This area stores class metadata (class definitions, method info, etc).
+- It replaced the old PermGen space (from Java 7 and before).
+- It's not part of the heap and grows dynamically based on system memory.
+
+
+
